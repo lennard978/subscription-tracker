@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="refresh" content="0; url=/subscription-tracker/" />
+		<script>
+			// SPA redirect for GitHub Pages
+			const path = window.location.pathname;
+			const redirectBase = "/subscription-tracker";
+			if (!path.startsWith(redirectBase)) {
+				window.location.replace(redirectBase + path);
+			} else {
+				window.location.replace(redirectBase + "/");
+			}
+		</script>
+	</head>
+	<body></body>
+</html>

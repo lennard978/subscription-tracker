@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter
-      basename="/subscription-tracker" // 👈 This fixes navigation on GitHub Pages
+      basename="/subscription-tracker"
       future={{ v7_startTransition: true }}
     >
       <App />
