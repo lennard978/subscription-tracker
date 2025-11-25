@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth theme transition for all elements */
+* {
+	transition: background-color 0.4s ease, color 0.4s ease,
+		border-color 0.4s ease;
+}
+
+/* Fade-in animation on app load */
+html {
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out;
+}
+
+html.ready {
+	opacity: 1;
+}
