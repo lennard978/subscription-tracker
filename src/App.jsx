@@ -21,7 +21,7 @@ export default function App() {
 
       <main className="p-4">
         <Routes>
-          <Route path="/subscription-tracker" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/add" element={<AddEditSubscription />} />
           <Route path="/edit/:id" element={<AddEditSubscription />} />
           <Route path="/settings" element={<Settings />} />
