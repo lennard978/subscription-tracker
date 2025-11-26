@@ -46,6 +46,17 @@ export default function SubscriptionForm() {
     navigate("/");
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -108,18 +119,26 @@ export default function SubscriptionForm() {
           className="w-full px-3 py-2 border rounded-md bg-gray-50 dark:bg-gray-700"
           required
         />
+
+        {/* Show formatted preview */}
+        {formData.renewalDate && (
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+            {formatDate(formData.renewalDate)}
+          </p>
+        )}
       </div>
+
 
       {/* Notes */}
       <div>
-        <label className="block mb-1 text-sm font-medium">Notes</label>
+        <label className="block mb-1 text-sm font-medium">Comments</label>
         <textarea
           name="notes"
           value={formData.notes}
           onChange={handleChange}
           rows="3"
           className="w-full px-3 py-2 border rounded-md bg-gray-50 dark:bg-gray-700"
-          placeholder="Optional notes..."
+          placeholder="Optional comments..."
         ></textarea>
       </div>
 

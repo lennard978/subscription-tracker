@@ -6,7 +6,7 @@ export default function NotificationButton() {
   return (
     <button
       onClick={requestPermission}
-      className="px-3 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600"
+      className="px-3 py-2 text-sm rounded-md bg-blue-500 text-white hover:bg-blue-600"
     >
       🔔 Enable Notifications
     </button>
