@@ -1,95 +1,67 @@
 const CACHE_NAME = "subscription-tracker-v2";
-const BASE_PATH = "/subscription-tracker";
-
-const urlsToCache = [
-  `${BASE_PATH}/`,
-  `${BASE_PATH}/index.html`,
-  `${BASE_PATH}/manifest.json`,
-  `${BASE_PATH}/favicon.ico`,
-  `${BASE_PATH}/logo192.png`,
-];
+const urlsToCache = ["/", "/index.html"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((names) =>
+      Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
+    )
+  );
+  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
-  const requestURL = new URL(event.request.url);
-
-  // Fix for GitHub Pages base path
-  if (requestURL.origin === location.origin && requestURL.pathname === "/") {
-    event.respondWith(caches.match(`${BASE_PATH}/index.html`));
-    return;
-  }
-
   event.respondWith(
-    caches.match(event.request).then((response) => response || fetch(event.request))
+    caches.match(event.request).then(
+      (response) => response || fetch(event.request)
+    )
   );
 });
 
-/* ✅ Background Push Support */
-self.addEventListener("push", (event) => {
-  let data = {};
+// ✅ Background check for renewals
+const checkRenewals = async () => {
   try {
-    data = event.data.json();
-  } catch {
-    data = { title: "🔔 Subscription Tracker", body: "New notification" };
+    const clients = await self.clients.matchAll({ includeUncontrolled: true });
+    if (!clients.length) return;
+
+    const client = clients[0];
+    const result = await client.postMessage({ type: "GET_SUBSCRIPTIONS" });
+
+    // The client (the app) will respond with subscriptions
+  } catch (err) {
+    console.error("Background renewal check failed:", err);
   }
+};
 
-  const title = data.title || "🔔 Subscription Tracker";
-  const options = {
-    body: data.body || "Check your subscriptions",
-    icon: `${BASE_PATH}/icons/icon-192x192.png`,
-    badge: `${BASE_PATH}/icons/icon-96x96.png`,
-    data: {
-      url: data.url || `${BASE_PATH}/`,
-    },
-  };
+// Run every 6 hours
+setInterval(checkRenewals, 6 * 60 * 60 * 1000);
 
-  event.waitUntil(self.registration.showNotification(title, options));
-});
-
-/* ✅ Handle Notification Clicks Correctly */
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-
-  const targetUrl = event.notification.data?.url || `${BASE_PATH}/`;
-  event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
-      for (const client of clientList) {
-        if (client.url.includes(targetUrl) && "focus" in client) {
-          return client.focus();
-        }
+// ✅ Handle notification trigger from main app
+self.addEventListener("message", (event) => {
+  const { type, subscriptions } = event.data || {};
+  if (type === "CHECK_RENEWALS" && Array.isArray(subscriptions)) {
+    const today = new Date();
+    subscriptions.forEach((sub) => {
+      const renewalDate = new Date(sub.renewalDate);
+      const diffDays = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        self.registration.showNotification("🔔 Upcoming Renewal", {
+          body: `${sub.name} renews tomorrow (€${sub.price})`,
+          icon: "/icons/icon-192x192.png",
+        });
       }
-      if (clients.openWindow) {
-        return clients.openWindow(targetUrl);
-      }
-    })
-  );
-
-  /* ✅ Local push simulation for testing */
-  self.addEventListener("message", (event) => {
-    if (event.data?.action === "simulate-push") {
-      const { title, body, url } = event.data.data;
-      self.registration.showNotification(title, {
-        body,
-        icon: `${BASE_PATH}/icons/icon-192x192.png`,
-        data: { url },
-      });
-    }
-  });
-
-  self.addEventListener("fetch", (event) => {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        return (
-          response ||
-          fetch(event.request).catch(() => caches.match("/index.html"))
-        );
-      })
-    );
+    });
+  }
+  self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+    event.waitUntil(clients.openWindow("/subscription-tracker/"));
   });
 
 });
