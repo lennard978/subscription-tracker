@@ -53,7 +53,7 @@ export default function Dashboard() {
       </div>
 
       {/* Add new subscription button */}
-      <div className="flex justify-end mb-4">
+      <div className="flex  justify-center mb-4">
         <Link
           to="/add"
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"

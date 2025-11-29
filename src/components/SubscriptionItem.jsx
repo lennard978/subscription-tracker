@@ -105,28 +105,135 @@ export default function SubscriptionItem({ sub, onDelete }) {
 
   // ✅ Handle “Mark as Paid”
   const handlePaid = () => {
-    const oldDate = new Date(currentSub.renewalDate || new Date());
-    const newDate = new Date(oldDate);
+    const oldRenewal = new Date(currentSub.renewalDate || new Date());
+    const newRenewal = new Date(oldRenewal);
 
-    if (currentSub.billingCycle === "Weekly") newDate.setDate(newDate.getDate() + 7);
-    else if (currentSub.billingCycle === "Yearly") newDate.setFullYear(newDate.getFullYear() + 1);
-    else newDate.setMonth(newDate.getMonth() + 1);
+    // ⏩ Move renewal date forward
+    if (currentSub.billingCycle === "Weekly") newRenewal.setDate(newRenewal.getDate() + 7);
+    else if (currentSub.billingCycle === "Yearly") newRenewal.setFullYear(newRenewal.getFullYear() + 1);
+    else newRenewal.setMonth(newRenewal.getMonth() + 1);
+
+    let newReminderDate = currentSub.reminderDate ? new Date(currentSub.reminderDate) : null;
+
+    // ⏩ If reminder is enabled, shift it too
+    if (currentSub.hasReminder && newReminderDate) {
+      if (currentSub.billingCycle === "Weekly") newReminderDate.setDate(newReminderDate.getDate() + 7);
+      else if (currentSub.billingCycle === "Yearly") newReminderDate.setFullYear(newReminderDate.getFullYear() + 1);
+      else newReminderDate.setMonth(newReminderDate.getMonth() + 1);
+    }
 
     const updatedSub = {
       ...currentSub,
-      renewalDate: newDate.toISOString().split("T")[0],
-      lastPaid: Date.now(),
+      renewalDate: newRenewal.toISOString().split("T")[0],
+      reminderDate: newReminderDate ? newReminderDate.toISOString().split("T")[0] : currentSub.reminderDate,
     };
 
     setCurrentSub(updatedSub);
-    setJustPaid(true);
     updateLocalStorage(updatedSub);
 
     showToast(
-      `✅ Payment marked as paid. Next renewal: ${formatDate(updatedSub.renewalDate)}.`,
+      `✅ Payment marked as paid. Next renewal: ${formatDate(updatedSub.renewalDate)}${updatedSub.hasReminder && updatedSub.reminderDate
+        ? ` (Reminder updated to ${formatDate(updatedSub.reminderDate)})`
+        : ""
+      }.`,
       "success"
     );
   };
+
+  const handleSetReminder = async (sub) => {
+    try {
+      if (!("Notification" in window)) {
+        showToast("Notifications not supported on this device.", "error");
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        showToast("Please enable notifications first.", "error");
+        return;
+      }
+
+      const updatedSub = { ...sub, hasReminder: true };
+      updateLocalStorage(updatedSub);
+      scheduleReminder(updatedSub);
+
+      showToast(
+        `🔔 Reminder saved for ${sub.name} — 1 day before renewal.`,
+        "success"
+      );
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to save reminder.", "error");
+    }
+  };
+
+  const scheduleReminder = async (sub) => {
+    const renewalDate = new Date(sub.renewalDate);
+    const reminderDate = new Date(renewalDate);
+    reminderDate.setDate(renewalDate.getDate() - 1);
+
+    const now = new Date();
+    const msUntilReminder = reminderDate - now;
+
+    if (msUntilReminder <= 0) return;
+
+    const reg = await navigator.serviceWorker.getRegistration();
+
+    // Save timeout id in memory (non-persistent)
+    setTimeout(() => {
+      if (reg && reg.showNotification) {
+        reg.showNotification("💳 Subscription Reminder", {
+          body: `${sub.name} renews tomorrow (€${sub.price})`,
+          icon: "/subscription-tracker/icon-192.png",
+        });
+      } else {
+        new Notification("💳 Subscription Reminder", {
+          body: `${sub.name} renews tomorrow (€${sub.price})`,
+        });
+      }
+    }, msUntilReminder);
+  };
+
+  const handleToggleReminder = async (sub) => {
+    try {
+      if (!("Notification" in window)) {
+        showToast("Notifications not supported on this device.", "error");
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        showToast("Please enable notifications first.", "error");
+        return;
+      }
+
+      const updatedSub = { ...sub, hasReminder: !sub.hasReminder };
+      updateLocalStorage(updatedSub);
+      setCurrentSub(updatedSub);
+
+      if (updatedSub.hasReminder) {
+        scheduleReminder(updatedSub);
+        showToast(`🔔 Reminder set for ${sub.name}`, "success");
+      } else {
+        cancelReminder(updatedSub);
+        showToast(`🔕 Reminder cancelled for ${sub.name}`, "info");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to update reminder.", "error");
+    }
+  };
+
+  const cancelReminder = (sub) => {
+    // For now, we just remove the flag — actual scheduled setTimeout clears on reload
+    const savedSubs = JSON.parse(localStorage.getItem("subscriptions") || "[]");
+    const updatedList = savedSubs.map((s) =>
+      s.id === sub.id ? { ...s, hasReminder: false } : s
+    );
+    localStorage.setItem("subscriptions", JSON.stringify(updatedList));
+  };
+
+
 
   const updateLocalStorage = (updatedSub) => {
     const savedSubs = JSON.parse(localStorage.getItem("subscriptions") || "[]");
@@ -149,47 +256,63 @@ export default function SubscriptionItem({ sub, onDelete }) {
             </div>
 
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="font-semibold text-lg">{currentSub.name}</h2>
-                {justPaid && (
-                  <span
-                    className="relative p-1 text-green-500 text-sm font-semibold flex items-center gap-1 
-      opacity-0 animate-fadeInSticky"
-                  >
-                    ✅ Paid
-                    <span className="absolute inset-0 rounded-md animate-paidGlow"></span>
-                  </span>
-                )}
+              <h2 className="font-semibold text-lg mb-1 flex items-center gap-1">
+                {currentSub.name}
+                {currentSub.hasReminder && <span className="text-yellow-500">🔔</span>}
+              </h2>
 
-              </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
                 {currentSub.billingCycle} – €{currentSub.price}
               </p>
+
+              {/* ✅ Show reminder info if exists */}
+              {currentSub.hasReminder && currentSub.reminderDate && (
+                <p className="text-xs text-yellow-500 mt-1">
+                  ⏰ Reminds you on {new Date(currentSub.reminderDate).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+              )}
+
+              {/* ✅ Renewal status text */}
               {text && (
                 <p className={`text-xs mt-1 font-medium flex items-center gap-1 ${color}`}>
                   <span>{icon}</span> {text}
                 </p>
               )}
             </div>
+
+
           </div>
 
-          {/* Buttons */}
-          <div className="flex items-center gap-2">
-            <Link
-              to={`/edit/${id}`}
-              className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
-              Edit
-            </Link>
-            <button
-              onClick={() => onDelete(id)}
-              className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
         </div>
+        {/* Buttons */}
+        <div className="flex gap-2 justify-end">
 
+          <Link
+            to={`/edit/${id}`}
+            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Edit
+          </Link>
+          <button
+            onClick={() => onDelete(id)}
+            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => handleToggleReminder(currentSub)}
+            className={`px-3 py-1 rounded-md text-white transition-colors ${currentSub.hasReminder
+              ? "bg-yellow-500 hover:bg-yellow-600"
+              : "bg-gray-500 hover:bg-gray-600"
+              }`}
+          >
+            {currentSub.hasReminder ? "🔕 Cancel Reminder" : "🔔 Set Reminder"}
+          </button>
+        </div>
         {/* Progress bar */}
         <div className="mt-2">
           <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -224,24 +347,74 @@ export default function SubscriptionItem({ sub, onDelete }) {
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
               <strong>Renewal Date:</strong> {formatDate(currentSub.renewalDate)}
             </p>
+
             {notes && (
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                 <strong>Notes:</strong> {notes}
               </p>
             )}
+
+            <button
+              onClick={() => handleSetReminder(currentSub)}
+              className="mt-1 w-full bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition-colors"
+            >
+              🔔 Remind me 1 day before
+            </button>
+
+
+
+            {/* ✅ Reminder Section */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium my-2">🔔 Reminder</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="date"
+                  value={currentSub.reminderDate || ""}
+                  onChange={(e) => {
+                    const newReminder = e.target.value;
+                    const updatedSub = {
+                      ...currentSub,
+                      hasReminder: !!newReminder,
+                      reminderDate: newReminder,
+                    };
+                    setCurrentSub(updatedSub);
+                    updateLocalStorage(updatedSub);
+                    showToast(
+                      newReminder
+                        ? `📅 Reminder set for ${formatDate(newReminder)}`
+                        : "🔕 Reminder removed",
+                      newReminder ? "info" : "error"
+                    );
+                  }}
+                  className="px-3 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-sm w-full"
+                />
+              </div>
+              {currentSub.hasReminder && currentSub.reminderDate && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Reminder active for {formatDate(currentSub.reminderDate)}
+                </p>
+              )}
+            </div>
+
+            {/* ✅ Countdown */}
             <div className="mt-4 text-center">
-              <p className={`text-sm font-medium ${diffDays < 0 ? "text-red-500" : "text-green-500"}`}>
+              <p
+                className={`text-sm font-medium ${diffDays < 0 ? "text-red-500" : "text-green-500"
+                  }`}
+              >
                 {getCountdownText()}
               </p>
             </div>
 
-            <button
-              onClick={handlePaid}
-              className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors"
-            >
-              Mark as Paid ✅
-            </button>
-
+            {/* ✅ Buttons */}
+            <div className="space-y-2 mt-4">
+              <button
+                onClick={handlePaid}
+                className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors"
+              >
+                Mark as Paid ✅
+              </button>
+            </div>
             <button
               onClick={() => setShowModal(false)}
               className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"

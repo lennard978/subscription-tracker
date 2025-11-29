@@ -3,68 +3,40 @@ import useNotifications from "../hooks/useNotifications";
 import { useToast } from "../context/ToastContext";
 
 export default function NotificationButton() {
-  const { requestPermission } = useNotifications();
-  const { showToast } = useToast();
+  const { requestPermission, isSupported } = useNotifications();
   const [permission, setPermission] = useState(Notification.permission);
+  const { showToast } = useToast();
 
   useEffect(() => {
-    // Keep track of current notification permission
     setPermission(Notification.permission);
   }, []);
 
   const handleClick = async () => {
-    try {
-      if (permission === "granted") {
-        showToast("✅ Notifications are already enabled!", "info");
-        return;
-      }
+    if (!isSupported) {
+      showToast("Notifications not supported on this device.", "error");
+      return;
+    }
+    const granted = await requestPermission();
+    setPermission(Notification.permission);
 
-      const result = await requestPermission();
-      setPermission(result);
-
-      if (result === "granted") {
-        showToast("🔔 Notifications enabled successfully!", "success");
-      } else if (result === "denied") {
-        showToast("🚫 Notifications permission denied.", "error");
-      } else {
-        showToast("ℹ️ Notification permission dismissed or unavailable.", "info");
-      }
-    } catch (err) {
-      console.error("Notification error:", err);
-      showToast("⚠️ Failed to request notification permission.", "error");
+    if (granted) {
+      showToast("🔔 Notifications enabled!", "success");
+    } else {
+      showToast("⚠️ Notifications not granted.", "error");
     }
   };
 
-  // Dynamic button color
-  const getButtonStyle = () => {
-    switch (permission) {
-      case "granted":
-        return "bg-green-500 hover:bg-green-600";
-      case "denied":
-        return "bg-red-500 hover:bg-red-600";
-      default:
-        return "bg-blue-500 hover:bg-blue-600";
-    }
-  };
-
-  // Dynamic button text
-  const getButtonText = () => {
-    switch (permission) {
-      case "granted":
-        return "✅ Notifications On";
-      case "denied":
-        return "🚫 Blocked";
-      default:
-        return "🔔 Enable Notifications";
-    }
-  };
+  const buttonStyle =
+    permission === "granted"
+      ? "bg-green-500 hover:bg-green-600"
+      : "bg-blue-500 hover:bg-blue-600";
 
   return (
     <button
       onClick={handleClick}
-      className={`px-3 py-2 text-sm text-white rounded-md transition-colors ${getButtonStyle()}`}
+      className={`px-3 py-2 text-sm rounded-md text-white transition-colors ${buttonStyle}`}
     >
-      {getButtonText()}
+      {permission === "granted" ? "✅ Enabled" : "🔔 Enable"}
     </button>
   );
 }
