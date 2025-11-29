@@ -63,7 +63,7 @@ export default function App() {
           width="60"
           height="60"
           sizes="auto, (max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)" src={IMAGES.image1} alt='first image' />
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col md:flex-row md:gap-1 justify-center items-center">
           <Link to="/" className="text-xl font-bold">
             Subscription
           </Link>

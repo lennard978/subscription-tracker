@@ -293,20 +293,20 @@ export default function SubscriptionItem({ sub, onDelete }) {
         <div className="flex gap-2 justify-end">
           <Link
             to={`/edit/${id}`}
-            className="px-3 py-1 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600"
+            className="px-3 py-1 text-white rounded-md text-sm rounded-mdborder-gray-300 bg-green-700 hover:bg-green-800 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 px-4 py-2 rounded"
           >
             Edit
           </Link>
           <button
             onClick={() => onDelete(id)}
-            className="px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600"
+            className="px-3 py-1 text-white text-sm rounded-md bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 px-4 py-2 rounded"
           >
             Delete
           </button>
           <button
             onClick={() => handleToggleReminder(currentSub)}
             className={`px-3 py-1 rounded-md text-sm text-white transition-colors ${currentSub.hasReminder
-              ? "bg-yellow-500 hover:bg-yellow-600"
+              ? "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
               : "bg-gray-500 hover:bg-gray-600"
               }`}
           >
