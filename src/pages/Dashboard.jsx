@@ -44,14 +44,6 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* ✅ Header with total cost */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Your Subscriptions</h1>
-        <p className="text-gray-700 dark:text-gray-300 font-medium">
-          💶 Total: €{totalCost.toFixed(2)}
-        </p>
-      </div>
-
       {/* Add new subscription button */}
       <div className="flex  justify-center mb-4">
         <Link
@@ -61,6 +53,15 @@ export default function Dashboard() {
           + Add Subscription
         </Link>
       </div>
+      {/* ✅ Header with total cost */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Your Subscriptions</h1>
+        <p className="text-gray-700 dark:text-gray-300 font-medium">
+          💶 Total: € {totalCost.toFixed(2)}
+        </p>
+      </div>
+
+
 
       <SubscriptionList items={subscriptions} onDelete={handleDelete} />
     </div>

@@ -31,11 +31,12 @@ export default function SubscriptionItem({ sub, onDelete }) {
 
   // ✅ Calendar badge info
   const getCalendarBadge = (dateString) => {
-    if (!dateString) return { month: "--", day: "--" };
+    if (!dateString) return { month: "--", day: "--", year: "----" };
     const date = new Date(dateString);
     const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
     const day = date.getDate();
-    return { month, day };
+    const year = date.getFullYear();
+    return { month, day, year };
   };
 
   // ✅ Renewal status logic
@@ -95,7 +96,7 @@ export default function SubscriptionItem({ sub, onDelete }) {
   const { text, color, icon, diffDays } = getRenewalStatus(currentSub.renewalDate);
   const progress = getProgress(currentSub.renewalDate, currentSub.billingCycle);
   const gradient = getProgressColor(progress);
-  const { month, day } = getCalendarBadge(currentSub.renewalDate);
+  const { month, day, year } = getCalendarBadge(currentSub.renewalDate);
 
   const getCountdownText = () => {
     if (diffDays > 0) return `💳 Next payment of €${currentSub.price} in ${diffDays} day${diffDays > 1 ? "s" : ""}`;
@@ -140,32 +141,32 @@ export default function SubscriptionItem({ sub, onDelete }) {
     );
   };
 
-  const handleSetReminder = async (sub) => {
-    try {
-      if (!("Notification" in window)) {
-        showToast("Notifications not supported on this device.", "error");
-        return;
-      }
+  // const handleSetReminder = async (sub) => {
+  //   try {
+  //     if (!("Notification" in window)) {
+  //       showToast("Notifications not supported on this device.", "error");
+  //       return;
+  //     }
 
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        showToast("Please enable notifications first.", "error");
-        return;
-      }
+  //     const permission = await Notification.requestPermission();
+  //     if (permission !== "granted") {
+  //       showToast("Please enable notifications first.", "error");
+  //       return;
+  //     }
 
-      const updatedSub = { ...sub, hasReminder: true };
-      updateLocalStorage(updatedSub);
-      scheduleReminder(updatedSub);
+  //     const updatedSub = { ...sub, hasReminder: true };
+  //     updateLocalStorage(updatedSub);
+  //     scheduleReminder(updatedSub);
 
-      showToast(
-        `🔔 Reminder saved for ${sub.name} — 1 day before renewal.`,
-        "success"
-      );
-    } catch (err) {
-      console.error(err);
-      showToast("Failed to save reminder.", "error");
-    }
-  };
+  //     showToast(
+  //       `🔔 Reminder saved for ${sub.name} — 1 day before renewal.`,
+  //       "success"
+  //     );
+  //   } catch (err) {
+  //     console.error(err);
+  //     showToast("Failed to save reminder.", "error");
+  //   }
+  // };
 
   const scheduleReminder = async (sub) => {
     const renewalDate = new Date(sub.renewalDate);
@@ -249,25 +250,27 @@ export default function SubscriptionItem({ sub, onDelete }) {
           <div className="flex items-center gap-4">
             <div
               onClick={() => setShowModal(true)}
-              className="flex flex-col items-center justify-center w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-md shadow-sm cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+              className="flex flex-col items-center justify-center w-12 h-20 bg-gray-200 dark:bg-gray-700 rounded-md shadow-sm cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
             >
               <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{month}</span>
               <span className="text-lg font-bold text-gray-900 dark:text-white">{day}</span>
+              <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{year}</span>
+
             </div>
 
             <div>
-              <h2 className="font-semibold text-lg mb-1 flex items-center gap-1">
+              <h2 className="font-semibold text-lg mb-0 flex items-center gap-2">
                 {currentSub.name}
                 {currentSub.hasReminder && <span className="text-yellow-500">🔔</span>}
               </h2>
 
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                {currentSub.billingCycle} – €{currentSub.price}
+              <p className="text-gray-600 dark:text-gray-400 text-xs">
+                {currentSub.billingCycle} – € {currentSub.price}
               </p>
 
               {/* ✅ Show reminder info if exists */}
               {currentSub.hasReminder && currentSub.reminderDate && (
-                <p className="text-xs text-yellow-500 mt-1">
+                <p className="text-xs text-yellow-500 mt-0.5">
                   ⏰ Reminds you on {new Date(currentSub.reminderDate).toLocaleDateString("en-US", {
                     day: "numeric",
                     month: "short",
@@ -278,34 +281,31 @@ export default function SubscriptionItem({ sub, onDelete }) {
 
               {/* ✅ Renewal status text */}
               {text && (
-                <p className={`text-xs mt-1 font-medium flex items-center gap-1 ${color}`}>
+                <p className={`text-xs mt-0.5 font-medium flex items-center gap-1 ${color}`}>
                   <span>{icon}</span> {text}
                 </p>
               )}
             </div>
-
-
           </div>
-
         </div>
+
         {/* Buttons */}
         <div className="flex gap-2 justify-end">
-
           <Link
             to={`/edit/${id}`}
-            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-3 py-1 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600"
           >
             Edit
           </Link>
           <button
             onClick={() => onDelete(id)}
-            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+            className="px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600"
           >
             Delete
           </button>
           <button
             onClick={() => handleToggleReminder(currentSub)}
-            className={`px-3 py-1 rounded-md text-white transition-colors ${currentSub.hasReminder
+            className={`px-3 py-1 rounded-md text-sm text-white transition-colors ${currentSub.hasReminder
               ? "bg-yellow-500 hover:bg-yellow-600"
               : "bg-gray-500 hover:bg-gray-600"
               }`}
@@ -354,18 +354,18 @@ export default function SubscriptionItem({ sub, onDelete }) {
               </p>
             )}
 
-            <button
+            {/* <button
               onClick={() => handleSetReminder(currentSub)}
               className="mt-1 w-full bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition-colors"
             >
               🔔 Remind me 1 day before
-            </button>
+            </button> */}
 
 
 
             {/* ✅ Reminder Section */}
             <div className="mb-4">
-              <label className="block text-sm font-medium my-2">🔔 Reminder</label>
+              <label className="block text-sm font-medium my-2">🔔 Set Reminder :</label>
               <div className="flex items-center gap-2">
                 <input
                   type="date"
