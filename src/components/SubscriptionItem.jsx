@@ -293,13 +293,13 @@ export default function SubscriptionItem({ sub, onDelete }) {
         <div className="flex gap-2 justify-end">
           <Link
             to={`/edit/${id}`}
-            className="px-3 py-1 text-white rounded-md text-sm rounded-mdborder-gray-300 bg-green-700 hover:bg-green-800 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 px-4 py-2 rounded"
+            className=" text-white text-sm rounded-mdborder-gray-300 bg-green-700 hover:bg-green-800 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 px-4 py-2 rounded"
           >
             Edit
           </Link>
           <button
             onClick={() => onDelete(id)}
-            className="px-3 py-1 text-white text-sm rounded-md bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 px-4 py-2 rounded"
+            className="text-sm bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 px-4 py-2 rounded"
           >
             Delete
           </button>
