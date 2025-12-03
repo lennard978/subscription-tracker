@@ -1,0 +1,33 @@
+{
+	"app_name": "Gestor de Suscripciones",
+
+	"welcome_title": "Bienvenido",
+	"welcome_message": "Controla fácilmente todas tus suscripciones y gastos mensuales.",
+	"button_sign_in": "Iniciar sesión",
+	"button_sign_up": "Crear cuenta",
+
+	"button_log_in": "Iniciar sesión",
+	"button_settings": "Ajustes",
+
+	"dashboard_title": "Panel de Control",
+	"dashboard_total_monthly": "Costo mensual total",
+	"dashboard_empty": "No tienes suscripciones añadidas.",
+	"dashboard_empty_cta": "Agregar suscripción",
+
+	"language": "Idioma",
+	"change_language_info": "Selecciona tu idioma preferido.",
+
+	"trial_ends_in": "Tu prueba gratuita termina en {{days}} días.",
+	"trial_ends_tomorrow": "Tu prueba gratuita termina mañana.",
+	"trial_expired": "Tu período de prueba ha finalizado.",
+	"go_to_settings": "Ir a Ajustes",
+
+	"settings_title": "Ajustes",
+	"settings_account": "Cuenta",
+	"settings_notifications": "Notificaciones",
+	"settings_enable_notifications": "Activar notificaciones",
+	"settings_trial_status": "Estado de la prueba",
+
+	"logout": "Cerrar sesión",
+	"logout_success": "Sesión cerrada con éxito"
+}

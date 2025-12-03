@@ -1,0 +1,33 @@
+{
+	"app_name": "Gestionnaire d’Abonnements",
+
+	"welcome_title": "Bienvenue",
+	"welcome_message": "Gérez facilement tous vos abonnements et dépenses mensuelles.",
+	"button_sign_in": "Se connecter",
+	"button_sign_up": "Créer un compte",
+
+	"button_log_in": "Connexion",
+	"button_settings": "Paramètres",
+
+	"dashboard_title": "Tableau de Bord",
+	"dashboard_total_monthly": "Coût mensuel total",
+	"dashboard_empty": "Vous n’avez aucun abonnement ajouté.",
+	"dashboard_empty_cta": "Ajouter un abonnement",
+
+	"language": "Langue",
+	"change_language_info": "Choisissez votre langue préférée.",
+
+	"trial_ends_in": "Votre essai gratuit se termine dans {{days}} jours.",
+	"trial_ends_tomorrow": "Votre essai gratuit se termine demain.",
+	"trial_expired": "Votre période d’essai est terminée.",
+	"go_to_settings": "Aller aux Paramètres",
+
+	"settings_title": "Paramètres",
+	"settings_account": "Compte",
+	"settings_notifications": "Notifications",
+	"settings_enable_notifications": "Activer les notifications",
+	"settings_trial_status": "Statut de l’essai",
+
+	"logout": "Déconnexion",
+	"logout_success": "Déconnexion réussie"
+}

@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth theme transition for all elements */
+* {
+	transition: background-color 0.4s ease, color 0.4s ease,
+		border-color 0.4s ease;
+}
+
+/* Fade-in animation on app load */
+html {
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out;
+}
+
+html.ready {
+	opacity: 1;
+}
+
+@keyframes fadeInOut {
+	0%,
+	100% {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	10%,
+	90% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+.animate-fadeInOut {
+	animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+	0% {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+	20% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	80% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+}
+
+.animate-fadeInOut {
+	animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInSticky {
+	0% {
+		opacity: 0;
+		transform: translateY(-3px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeInSticky {
+	animation: fadeInSticky 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInSticky {
+	0% {
+		opacity: 0;
+		transform: translateY(-3px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeInSticky {
+	animation: fadeInSticky 0.5s ease-in-out forwards;
+}
+
+/* 🌟 Gentle shimmering green glow */
+@keyframes paidGlow {
+	0% {
+		box-shadow: 0 0 0px rgba(16, 185, 129, 0.3);
+	}
+	50% {
+		box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+	}
+	100% {
+		box-shadow: 0 0 0px rgba(16, 185, 129, 0.3);
+	}
+}
+
+.animate-paidGlow {
+	animation: paidGlow 2s ease-in-out infinite;
+	border-radius: 4px;
+	pointer-events: none;
+}
+
+@keyframes fadeInSticky {
+	0% {
+		opacity: 0;
+		transform: translateY(-3px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeInSticky {
+	animation: fadeInSticky 0.5s ease-in-out forwards;
+}
+
+/* 🌟 Adaptive shimmer glow */
+@keyframes paidGlowLight {
+	0% {
+		box-shadow: 0 0 0px rgba(110, 231, 183, 0.3);
+	}
+	50% {
+		box-shadow: 0 0 10px rgba(52, 211, 153, 0.6);
+	}
+	100% {
+		box-shadow: 0 0 0px rgba(110, 231, 183, 0.3);
+	}
+}
+
+@keyframes paidGlowDark {
+	0% {
+		box-shadow: 0 0 0px rgba(16, 185, 129, 0.3);
+	}
+	50% {
+		box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+	}
+	100% {
+		box-shadow: 0 0 0px rgba(16, 185, 129, 0.3);
+	}
+}
+
+/* Default light mode */
+.animate-paidGlow {
+	animation: paidGlowLight 2s ease-in-out infinite;
+	border-radius: 4px;
+	pointer-events: none;
+}
+
+/* Dark mode shimmer */
+.dark .animate-paidGlow {
+	animation: paidGlowDark 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeIn {
+	animation: fadeIn 0.7s ease-in-out;
+}

@@ -1,0 +1,111 @@
+{
+	"app_name": "Abonnement-Tracker",
+
+	"welcome_title": "Verwalten Sie Ihre Abonnements mühelos",
+	"welcome_message": "Behalten Sie Kosten im Blick, vermeiden Sie Überraschungen und kontrollieren Sie Ihre regelmäßigen Ausgaben.",
+	"button_sign_in": "Anmelden",
+	"button_sign_up": "Registrieren",
+
+	"login_title": "Anmelden",
+	"login_email": "E-Mail",
+	"login_password": "Passwort",
+	"login_button": "Login",
+	"login_no_account": "Sie haben kein Konto?",
+	"login_signup_link": "Registrieren",
+
+	"signup_title": "Konto erstellen",
+	"signup_email": "E-Mail",
+	"signup_password": "Passwort",
+	"signup_button": "Registrieren",
+	"signup_have_account": "Bereits ein Konto?",
+	"signup_login_link": "Anmelden",
+
+	"dashboard_title": "Ihre Abonnements",
+	"dashboard_total_monthly": "Monatliche Gesamtkosten",
+	"dashboard_empty": "Noch keine Abonnements hinzugefügt.",
+	"dashboard_empty_cta": "Erstes Abonnement hinzufügen",
+	"dashboard_add_button": "+ Abonnement hinzufügen",
+
+	"analytics_title": "Analyse",
+	"analytics_monthly_category": "Monatliche Kosten nach Kategorie",
+	"analytics_total_spend": "Monatliche Gesamtausgaben",
+
+	"subscription_edit": "Bearbeiten",
+	"subscription_delete": "Löschen",
+
+	"add_title": "Abonnement hinzufügen",
+	"edit_title": "Abonnement bearbeiten",
+	"field_name": "Name",
+	"field_price": "Preis",
+	"field_category": "Kategorie",
+	"field_frequency": "Abrechnungszeitraum",
+	"frequency_monthly": "Monatlich",
+	"frequency_yearly": "Jährlich",
+	"button_save": "Speichern",
+	"button_cancel": "Abbrechen",
+
+	"trial_banner_day": "Ihre kostenlose Testphase endet morgen.",
+	"trial_banner_days_left": "Ihre Testphase endet in {{count}} Tagen.",
+
+	"trial_expired_title": "Ihre Testphase ist abgelaufen",
+	"trial_expired_message": "Um die Funktionen weiter zu nutzen, wechseln Sie bitte zu Premium.",
+	"trial_expired_button": "Zu den Einstellungen",
+
+	"settings_title": "Einstellungen",
+	"settings_language": "Sprache",
+	"settings_language_info": "Sprache der App sofort ändern.",
+	"settings_account": "Konto",
+	"settings_email": "E-Mail",
+	"settings_trial": "Teststatus",
+	"settings_premium_title": "Premium-Abonnement",
+	"settings_premium_none": "Noch kein Premium-Abonnement.",
+	"settings_notifications": "Benachrichtigungen",
+	"settings_notifications_enable": "Benachrichtigungen aktivieren",
+	"settings_notifications_info": "Wird benötigt, um Sie vor erneuten Zahlungen zu informieren.",
+	"settings_logout": "Abmelden",
+
+	"success_title": "Zahlung erfolgreich",
+	"success_message": "Vielen Dank! Ihr Abonnement ist jetzt aktiv.",
+	"success_back": "Zur Übersicht",
+
+	"cancel_title": "Zahlung abgebrochen",
+	"cancel_message": "Ihr Abonnement wurde nicht aktiviert.",
+	"cancel_back": "Erneut versuchen",
+
+	"error_required": "Dieses Feld ist erforderlich",
+	"error_email_invalid": "Bitte geben Sie eine gültige E-Mail ein",
+	"error_password_short": "Das Passwort muss mindestens 6 Zeichen haben",
+
+	"toast_login_success": "Login erfolgreich!",
+	"toast_signup_success": "Registrierung erfolgreich!",
+	"toast_logout_success": "Erfolgreich abgemeldet",
+
+	"button_settings": "Einstellungen",
+
+	"language": "Sprache",
+	"lang_en": "Englisch",
+	"lang_de": "Deutsch",
+	"change_language_info": "Ändere jederzeit die Sprache der App.",
+	"button_login": "Einloggen",
+	"button_logout": "Abmelden",
+
+	"add_subscription": "Abo hinzufügen",
+
+	"subscription_category": "Kategorie",
+	"subscription_monthly": "pro Monat",
+	"subscription_yearly": "pro Jahr",
+
+	"form_name": "Name",
+	"form_price": "Preis",
+	"form_frequency": "Abrechnungszeitraum",
+	"form_monthly": "Monatlich",
+	"form_yearly": "Jährlich",
+	"form_category": "Kategorie",
+	"form_save": "Speichern",
+	"form_cancel": "Abbrechen",
+
+	"trial_banner_one_day": "Deine kostenlose Testphase endet morgen.",
+	"settings_trial_status": "Teststatus",
+	"settings_premium": "Premium-Abonnement",
+	"settings_enable_notifications": "Benachrichtigungen aktivieren"
+}
