@@ -1,4 +1,4 @@
-import{c as i,b as n,j as e,L as r}from"./index-CZwglLi2.js";function d(){const{user:s}=i(),{t}=n();return s?e.jsx("div",{className:"flex justify-center mt-20 px-4",children:e.jsxs("div",{className:`max-w-md w-full p-8 rounded-2xl shadow-xl \r
+import{c as i,b as n,j as e,L as r}from"./index-B8S5XaWa.js";function d(){const{user:s}=i(),{t}=n();return s?e.jsx("div",{className:"flex justify-center mt-20 px-4",children:e.jsxs("div",{className:`max-w-md w-full p-8 rounded-2xl shadow-xl \r
         bg-gradient-to-br from-blue-100 to-indigo-200 text-gray-900 \r
         dark:from-blue-600 dark:to-indigo-700 dark:text-white text-center`,children:[e.jsx("p",{className:"mb-4 text-lg font-semibold",children:t("toast_login_success")}),e.jsx(r,{to:"/dashboard",className:`inline-block px-5 py-2 mt-2 bg-white text-blue-600 font-medium rounded-md \r
             hover:bg-gray-100 transition dark:bg-gray-900 dark:text-white dark:border dark:border-white \r
