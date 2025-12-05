@@ -1,0 +1,1 @@
+import{j as r}from"./index-C9yXFqcu.js";const o=["EUR","USD","GBP","CHF","PLN","SEK","DKK","NOK","JPY","CAD","AUD"];function a({value:t,onChange:n}){return r.jsx("select",{value:t,onChange:e=>n(e.target.value),className:"px-3 py-2 rounded-md border dark:bg-gray-800 text-sm",children:o.map(e=>r.jsx("option",{value:e,children:e},e))})}export{a as C};
